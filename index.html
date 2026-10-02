@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Das Interaktive Deutsch - Învață Germană Rapid</title>
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-hover: #1e293b;
+            --secondary: #dd0000;
+            --accent: #ffce00;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            --level-a: #16a34a;
+            --level-b: #d97706;
+            --level-c: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 3px solid var(--secondary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.25rem 1rem 0.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .site-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .site-title span {
+            color: var(--secondary);
+        }
+
+        .nav-container {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            padding: 0.85rem 1.5rem;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--secondary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--secondary);
+            background-color: #fffbe6;
+            border-radius: 8px 8px 0 0;
+        }
+
+        main {
+            max-width: 1200px;
+            width: 100%;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        .controls-bar {
+            background: #ffffff;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .control-group label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .control-group select, .control-group input {
+            padding: 0.5rem 0.85rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            outline: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background-color: #ffffff;
+        }
+
+        .badge-level {
+            font-weight: 800;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.75rem;
+        }
+        .bg-a { background-color: var(--level-a); }
+        .bg-b { background-color: var(--level-b); }
+        .bg-c { background-color: var(--level-c); }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* FILA 1: Vocabular */
+        .vocab-table-container {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .vocab-table th, .vocab-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vocab-table th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .vocab-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .audio-btn {
+            background: #fffbe6;
+            border: 1px solid #fde047;
+            color: #854d0e;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .audio-btn:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: white;
+        }
+
+        /* FILA 2: Flashcards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .flashcard {
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: var(--text-main);
+        }
+
+        .card-back {
+            background-color: var(--secondary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .card-front .word-de {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .card-back .word-ro {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card-domain {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .card-level {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* FILA 3: Quiz */
+        .quiz-container {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option-btn {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            background: #ffffff;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option-btn:hover {
+            border-color: var(--secondary);
+            background-color: #fffbe6;
+        }
+
+        .quiz-option-btn.correct {
+            background-color: #dcfce7 !important;
+            border-color: var(--level-a) !important;
+            color: #15803d;
+        }
+
+        .quiz-option-btn.wrong {
+            background-color: #fee2e2 !important;
+            border-color: var(--level-c) !important;
+            color: #b91c1c;
+        }
+
+        .quiz-controls {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-next {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-next:hover {
+            background: #b91c1c;
+        }
+
+        .score-board {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin: 1rem 0;
+        }
+
+        .style-box {
+            margin-top: 2.5rem;
+            padding: 1.25rem;
+            background-color: #ffffff;
+            border-left: 4px solid var(--secondary);
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <h1 class="site-title">Das Interaktive Deutsch <span>.de</span></h1>
+            <nav class="nav-container">
+                <button class="tab-btn active" onclick="switchTab('vocabular')">Fila 1: Vocabular Text & Audio</button>
+                <button class="tab-btn" onclick="switchTab('cards')">Fila 2: Carduri de Memorie (Flashcards)</button>
+                <button class="tab-btn" onclick="switchTab('quiz')">Fila 3: Quiz Interactiv</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Panou Filtre Globale -->
+        <div class="controls-bar">
+            <div class="control-group">
+                <label for="filter-level">Dificultate:</label>
+                <select id="filter-level" onchange="applyFilters()">
+                    <option value="all">Toate 3 (A, B, C)</option>
+                    <option value="A">Ușor (A)</option>
+                    <option value="B">Mediu (B)</option>
+                    <option value="C">Dificil (C)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="filter-domain">Domeniu Tematic:</label>
+                <select id="filter-domain" onchange="applyFilters()">
+                    <option value="all">Toate Domeniile</option>
+                    <option value="saluturi">Saluturi & Conversație</option>
+                    <option value="restaurant">La Restaurant & Cafenea</option>
+                    <option value="plimbare">La Plimbare / Indicații / Oraș</option>
+                    <option value="urgente">Urgențe & Sănătate</option>
+                    <option value="badante">Îngrijire Bătrâni</option>
+                    <option value="cumparaturi">La Magazin / Casieriță</option>
+                    <option value="trafic">Condus & Trafic</option>
+                    <option value="munca">Muncă, Șantier & Job</option>
+                    <option value="casa">Obiecte din Casă</option>
+                    <option value="animale_plante">Animale & Plante</option>
+                    <option value="numere">Numere</option>
+                    <option value="timp">Calendar & Timp</option>
+                </select>
+            </div>
+
+            <div class="control-group" style="margin-left: auto;">
+                <input type="text" id="search-input" placeholder="Caută cuvânt sau expresie..." oninput="applyFilters()">
+            </div>
+        </div>
+
+        <!-- FILA 1: VOCABULAR -->
+        <section id="tab-vocabular" class="tab-content active">
+            <div class="vocab-table-container">
+                <table class="vocab-table">
+                    <thead>
+                        <tr>
+                            <th>Limba Germană</th>
+                            <th>Traducere Română</th>
+                            <th>Dificultate</th>
+                            <th>Domeniu</th>
+                            <th>Pronunție Audio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vocab-tbody">
+                        <!-- Generat dinamic -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- FILA 2: CARDURI DE MEMORIE -->
+        <section id="tab-cards" class="tab-content">
+            <div class="cards-grid" id="cards-container">
+                <!-- Generat dinamic -->
+            </div>
+        </section>
+
+        <!-- FILA 3: QUIZ TESTE -->
+        <section id="tab-quiz" class="tab-content">
+            <div class="quiz-container" id="quiz-box">
+                <!-- Generat dinamic -->
+            </div>
+        </section>
+
+        <div class="style-box">
+            <strong>Style Box:</strong> Sistem complet de învățare a limbii germane structurat pe 3 file interactive (Vocabular Audio, Carduri Flash3D, Quiz Evaluare). Integrare nativă cu Web Speech API (`de-DE`) pentru redare vocală automată, clasificare pe nivele europene de dificultate (A, B, C) și împărțire pe domenii situaționale practice. Palette vizuală adaptată la culorile Germaniei (Negru, Roșu, Aurat/Galben).
+        </div>
+    </main>
+
+    <script>
+        // BAZA DE DATE DE CUVINTE ȘI EXPRESII În GERMANĂ (173 ELEMENTE)
+        const database = [
+            // SALUTURI & CONVERSAȚIE (1-9)
+            { id: 1, de: "Guten Morgen / Guten Tag", ro: "Bună dimineața / Bună ziua", level: "A", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 2, de: "Guten Abend", ro: "Bună seara", level: "A", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 3, de: "Wie geht es Ihnen?", ro: "Ce mai faci? / Cum vă merge?", level: "A", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 4, de: "Freut mich, Sie kennenzulernen", ro: "Încântat de cunoștință", level: "A", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 5, de: "Auf Wiedersehen", ro: "La revedere", level: "A", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 6, de: "Wie heißen Sie?", ro: "Cum te cheamă? / Cum vă meșteți?", level: "A", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 7, de: "Woher kommen Sie?", ro: "De unde ești / veniți?", level: "B", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 8, de: "Bis bald!", ro: "Ne vedem curând", level: "B", domain: "saluturi", domainLabel: "Saluturi" },
+            { id: 9, de: "Sich von sich hören lassen", ro: "A da un semn de viață", level: "C", domain: "saluturi", domainLabel: "Saluturi" },
+
+            // LA RESTAURANT (10-17)
+            { id: 10, de: "Ich möchte einen Tisch reservieren", ro: "Aș dori să rezerv o masă", level: "A", domain: "restaurant", domainLabel: "Restaurant" },
+            { id: 11, de: "Die Speisekarte, bitte", ro: "Meniul, vă rog", level: "A", domain: "restaurant", domainLabel: "Restaurant" },
+            { id: 12, de: "Die Rechnung, bitte", ro: "Nota de plată, vă rog", level: "A", domain: "restaurant", domainLabel: "Restaurant" },
+            { id: 13, de: "Einen Espresso, bitte", ro: "Un espresso, mulțumesc", level: "A", domain: "restaurant", domainLabel: "Restaurant" },
+            { id: 14, de: "Glutenfrei", ro: "Fără gluten", level: "B", domain: "restaurant", domainLabel: "Restaurant" },
+            { id: 15, de: "Was empfehlen Sie?", ro: "Ce îmi recomandați?", level: "B", domain: "restaurant", domainLabel: "Restaurant" },
+            { id: 16, de: "Ist die Bedienung inbegriffen?", ro: "Serviciul este inclus?", level: "B", domain: "restaurant", domainLabel: "Restaurant" },
+            { id: 17, de: "Blutig / Gut durchgebraten", ro: "Făcută în sânge / bine făcută", level: "C", domain: "restaurant", domainLabel: "Restaurant" },
+
+            // LA PLIMBARE & ORAȘ (18-23)
+            { id: 18, de: "Wo ist der Bahnhof?", ro: "Unde este gara?", level: "A", domain: "plimbare", domainLabel: "La Plimbare" },
+            { id: 19, de: "Nach rechts / links abbiegen", ro: "A face la dreapta / stânga", level: "A", domain: "plimbare", domainLabel: "La Plimbare" },
+            { id: 20, de: "Geradeaus bis zur Ampel", ro: "Tot înainte până la semafor", level: "B", domain: "plimbare", domainLabel: "La Plimbare" },
+            { id: 21, de: "Wie weit ist es von hier?", ro: "Cât de departe este de aici?", level: "B", domain: "plimbare", domainLabel: "La Plimbare" },
+            { id: 22, de: "Eine Fahrkarte einfache Fahrt", ro: "Un bilet doar dus", level: "B", domain: "plimbare", domainLabel: "La Plimbare" },
+            { id: 23, de: "Sich in den Gassen verlieren", ro: "A se rătăci pe străduțe", level: "C", domain: "plimbare", domainLabel: "La Plimbare" },
+
+            // URGENȚE & SĂNĂTATE (24-29)
+            { id: 24, de: "Hilfe!", ro: "Ajutor!", level: "A", domain: "urgente", domainLabel: "Urgențe" },
+            { id: 25, de: "Rufen Sie einen Krankenwagen!", ro: "Chemați o ambulanță!", level: "A", domain: "urgente", domainLabel: "Urgențe" },
+            { id: 26, de: "Ich brauche einen Arzt", ro: "Am nevoie de un medic", level: "A", domain: "urgente", domainLabel: "Urgențe" },
+            { id: 27, de: "Es tut mir hier weh", ro: "Mă doare aici", level: "B", domain: "urgente", domainLabel: "Urgențe" },
+            { id: 28, de: "Ich habe meine Brieftasche verloren", ro: "Mi-am pierdut portofelul", level: "B", domain: "urgente", domainLabel: "Urgențe" },
+            { id: 29, de: "Notaufnahme", ro: "Unitate de primiri urgențe", level: "C", domain: "urgente", domainLabel: "Urgențe" },
+
+            // LA MUNCĂ & ȘANTIER (30-36)
+            { id: 30, de: "Ich arbeite auf der Baustelle", ro: "Lucrez pe șantier", level: "A", domain: "munca", domainLabel: "La Muncă" },
+            { id: 31, de: "Schutzhelm", ro: "Cască de protecție", level: "A", domain: "munca", domainLabel: "La Muncă" },
+            { id: 32, de: "Werkzeuge", ro: "Unelte de lucru", level: "A", domain: "munca", domainLabel: "La Muncă" },
+            { id: 33, de: "Unterlagsestrich", ro: "Șapă de nivelare", level: "B", domain: "munca", domainLabel: "La Muncă" },
+            { id: 34, de: "Putz und Gipskarton", ro: "Tencuială și gips-carton", level: "B", domain: "munca", domainLabel: "La Muncă" },
+            { id: 35, de: "Kostenanschlag / Leistungsverzeichnis", ro: "Deviz de lucrări / Antemăsurătoare", level: "C", domain: "munca", domainLabel: "La Muncă" },
+            { id: 36, de: "Tragende Wand und Träger", ro: "Perete de rezistență și grindă", level: "C", domain: "munca", domainLabel: "La Muncă" },
+
+            // CUMPĂRĂTURI & MAGAZIN (37-40)
+            { id: 37, de: "Wie viel kostet das?", ro: "Cât costă acesta?", level: "A", domain: "cumparaturi", domainLabel: "Cumpărături" },
+            { id: 38, de: "Kann ich mit Karte zahlen?", ro: "Pot plăti cu cardul?", level: "A", domain: "cumparaturi", domainLabel: "Cumpărături" },
+            { id: 39, de: "Kann ich es anprobieren?", ro: "Pot să îl probez?", level: "B", domain: "cumparaturi", domainLabel: "Cumpărături" },
+            { id: 40, de: "Kassenbon / Quittung", ro: "Bon fiscal", level: "C", domain: "cumparaturi", domainLabel: "Cumpărături" },
+
+            // ÎNGRIJIRE BĂTRÂNI (BADANTE) (41-57)
+            { id: 41, de: "Das Medikament / Die Medizin", ro: "Medicamentul", level: "B", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 42, de: "Das Rezept", ro: "Rețeta medicală", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 43, de: "Der Blutdruck (hoch/niedrig)", ro: "Tensiunea (mare/mică)", level: "B", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 44, de: "Erwachsenenwindel", ro: "Absorbant/pancert pentru adulți", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 45, de: "Krankenwagen / Rollstuhl", ro: "Cărucior cu rotile", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 46, de: "Rollstuhl", ro: "Scaun cu rotile", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 47, de: "Gehhilfe / Rollator", ro: "Cadrul de mers", level: "B", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 48, de: "Arzt / Ärztin", ro: "Doctor / Medic", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 49, de: "Fieber", ro: "Febră", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 50, de: "Schmerzen", ro: "Durere", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 51, de: "Wie fühlen Sie sich heute?", ro: "Cum vă simțiți astăzi?", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 52, de: "Es ist Zeit, die Medizin zu nehmen.", ro: "Este timpul să luați medicamentele.", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 53, de: "Haben Sie Hunger / Durst?", ro: "Vă este foame / sete?", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 54, de: "Tut Ihnen etwas weh?", ro: "Vă doare ceva?", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 55, de: "Stützen Sie sich auf mich.", ro: "Sprijină-te de mine.", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 56, de: "Machen wir einen Spaziergang?", ro: "Facem o plimbare?", level: "A", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+            { id: 57, de: "Wir müssen den Blutdruck messen.", ro: "Trebuie să măsurăm tensiunea.", level: "B", domain: "badante", domainLabel: "Îngrijire Bătrâni" },
+
+            // LA MAGAZIN / CASIERIȚĂ (58-73)
+            { id: 58, de: "Kassenbon", ro: "Bon fiscal", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 59, de: "Tüte / Plastiktüte", ro: "Pungă", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 60, de: "Bargeld", ro: "Bani gheață / Numerar", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 61, de: "Kreditkarte / EC-Karte", ro: "Card de credit / Card bancar", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 62, de: "Kundenkarte", ro: "Card de fidelitate", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 63, de: "Wechselgeld", ro: "Rest (de bani)", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 64, de: "Rabatt", ro: "Reducere", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 65, de: "Angebot", ro: "Ofertă", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 66, de: "Preis", ro: "Preț", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 67, de: "Einkaufswagen / Korbe", ro: "Cărucior / Coș de cumpărături", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 68, de: "Haben Sie eine Kundenkarte?", ro: "Aveți card de fidelitate?", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 69, de: "Zahlen Sie bar oder mit Karte?", ro: "Plătiți cash sau cu cardul?", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 70, de: "Hier ist der Kassenbon und das Wechselgeld.", ro: "Poftiți bonul și restul.", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 71, de: "Brauchen Sie eine Tüte?", ro: "Aveți nevoie de o pungă?", level: "A", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 72, de: "Legen Sie die Einkäufe bitte hierhin.", ro: "Puneți cumpările aici, vă rog.", level: "B", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+            { id: 73, de: "Versuchen Sie, die PIN erneut einzugeben.", ro: "Încercați să introduceți din nou PIN-ul.", level: "B", domain: "cumparaturi", domainLabel: "La Magazin / Casieriță" },
+
+            // INDICAȚII / ORAȘ (74-89)
+            { id: 74, de: "Rechts", ro: "Dreapta", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 75, de: "Links", ro: "Stânga", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 76, de: "Geradeaus", ro: "Inainte", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 77, de: "Kreuzung", ro: "Intersecție", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 78, de: "Ampel", ro: "Semafor", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 79, de: "Bahnhof", ro: "Gară", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 80, de: "Bushaltestelle", ro: "Stație de autobuz", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 81, de: "Platz", ro: "Piață (publică)", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 82, de: "Straße / Allee", ro: "Stradă / Bulevard", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 83, de: "Nah / Weit", ro: "Aproape / Departe", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 84, de: "Entschuldigung, wo ist der Bahnhof?", ro: "Scuzați-mă, unde este gara?", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 85, de: "Wie komme ich zu...?", ro: "Cum pot ajunge la...?", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 86, de: "Gehen Sie immer geradeaus.", ro: "Mergeți tot înainte.", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 87, de: "Biegen Sie nach rechts / links ab.", ro: "Cotiți la dreapta / stânga.", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 88, de: "Ist es nah / weit von hier?", ro: "Este aproape / departe de aici?", level: "A", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+            { id: 89, de: "An der Kreuzung biegen Sie nach links ab.", ro: "La intersecție, luați-o la stânga.", level: "B", domain: "plimbare", domainLabel: "Indicații / Oraș" },
+
+            // CONDUS & TRAFIC (90-104)
+            { id: 90, de: "Führerschein", ro: "Permis de conducere", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 91, de: "Auto / Wagen", ro: "Mașină", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 92, de: "Sicherheitsgurt", ro: "Centură de siguranță", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 93, de: "Parkplatz", ro: "Parcare", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 94, de: "Strafzettel / Bußgeld", ro: "Amendă", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 95, de: "Versicherung", ro: "Asigurare", level: "B", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 96, de: "Benzin / Diesel", ro: "Benzina / Motorină", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 97, de: "Autobahn", ro: "Autostradă", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 98, de: "Maut", ro: "Taxă de autostradă", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 99, de: "Geschwindigkeitsbegrenzung", ro: "Limită de viteză", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 100, de: "Schnallen Sie sich an.", ro: "Pune-ți centura.", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 101, de: "Wo kann ich parken?", ro: "Unde pot parca?", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 102, de: "Setzen Sie den Blinker.", ro: "Pune semnalizarea.", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 103, de: "Bremse!", ro: "Frânează!", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+            { id: 104, de: "Ich muss auftanken.", ro: "Trebuie să fac plinul (de combustibil).", level: "A", domain: "trafic", domainLabel: "Condus & Trafic" },
+
+            // MUNCĂ & JOB (105-118)
+            { id: 105, de: "Vertrag", ro: "Contract", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 106, de: "Gehalt / Lohn", ro: "Salariu / Plată", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 107, de: "Arbeitszeit", ro: "Program de lucru", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 108, de: "Pause", ro: "Pauză", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 109, de: "Erlaubnis / Freistellung", ro: "Concediu / Permis de absență", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 110, de: "Urlaub", ro: "Concediu de odihnă", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 111, de: "Gehaltsabrechnung", ro: "Fluturaș de salariu", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 112, de: "Arbeitgeber", ro: "Angajator", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 113, de: "Kollege / Kollegin", ro: "Coleg / Colegă", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 114, de: "Schicht", ro: "Tură / Schimb", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 115, de: "Um wie viel Uhr fange ich morgen an?", ro: "La ce oră încep mâine?", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 116, de: "Heute habe ich meinen freien Tag.", ro: "Azi am zi liberă.", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 117, de: "Kann ich frei bekommen?", ro: "Pot lua o învoire?", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+            { id: 118, de: "Ich habe meine Schicht beendet.", ro: "Mi-am terminat tura.", level: "A", domain: "munca", domainLabel: "Muncă & Job" },
+
+            // OBIECTE DIN CASĂ (119-134)
+            { id: 119, de: "Bett", ro: "Pat", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 120, de: "Kissen", ro: "Pernă", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 121, de: "Decke", ro: "Pătură", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 122, de: "Bettlaken", ro: "Cearșaf", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 123, de: "Tisch / Stuhl", ro: "Masă / Scaun", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 124, de: "Schrank", ro: "Dulap", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 125, de: "Sofa / Couch", ro: "Canapea", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 126, de: "Teller", ro: "Farfurie", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 127, de: "Glas", ro: "Pahar", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 128, de: "Gabel / Löffel / Messer", ro: "Furculiță / Lingură / Cuțit", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 129, de: "Topf", ro: "Oală", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 130, de: "Pfanne", ro: "Tigaie", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 131, de: "Besen / Mop", ro: "Mătură / Mop", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 132, de: "Waschmittel", ro: "Detergent", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 133, de: "Waschmaschine", ro: "Mașină de spălat rufe", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+            { id: 134, de: "Spülmaschine", ro: "Mașină de spălat vase", level: "A", domain: "casa", domainLabel: "Obiecte din Casă" },
+
+            // ANIMALE & PLANTE (135-147)
+            { id: 135, de: "Hund", ro: "Câine", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 136, de: "Katze", ro: "Pisică", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 137, de: "Vogel", ro: "Pasăre", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 138, de: "Fisch", ro: "Pește", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 139, de: "Hamster", ro: "Hârciog", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 140, de: "Hundeleine", ro: "Lesă", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 141, de: "Blume", ro: "Floare", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 142, de: "Zimmerpflanze", ro: "Plantă de interior", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 143, de: "Baum", ro: "Copac", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 144, de: "Gras", ro: "Iarbă", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 145, de: "Blumentopf", ro: "Ghiveci", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 146, de: "Gießen", ro: "A uda (plantele)", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+            { id: 147, de: "Dünger", ro: "Îngrășământ", level: "A", domain: "animale_plante", domainLabel: "Animale & Plante" },
+
+            // NUMERE (148-151)
+            { id: 148, de: "null, eins, zwei, drei, vier, fünf, sechs, sieben, acht, neun, zehn.", ro: "0-10", level: "A", domain: "numere", domainLabel: "Numere" },
+            { id: 149, de: "elf, zwölf, dreizehn, vierzehn, fünfzehn, sechzehn, siebzehn, achtzehn, neunzehn, zwanzig.", ro: "11-20", level: "A", domain: "numere", domainLabel: "Numere" },
+            { id: 150, de: "zwanzig (20), dreißig (30), vierzig (40), fünfzig (50), sechzig (60), siebzig (70), achtzig (80), neunzig (90).", ro: "Zeci", level: "A", domain: "numere", domainLabel: "Numere" },
+            { id: 151, de: "hundert (100), tausend (1000).", ro: "Altele", level: "A", domain: "numere", domainLabel: "Numere" },
+
+            // CALENDAR & TIMP (152-173)
+            { id: 152, de: "Montag", ro: "Luni", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 153, de: "Dienstag", ro: "Marți", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 154, de: "Mittwoch", ro: "Miercuri", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 155, de: "Donnerstag", ro: "Joi", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 156, de: "Freitag", ro: "Vineri", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 157, de: "Samstag", ro: "Sâmbătă", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 158, de: "Sonntag", ro: "Duminică", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 159, de: "Januar", ro: "Ianuarie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 160, de: "Februar", ro: "Februarie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 161, de: "März", ro: "Martie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 162, de: "April", ro: "Aprilie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 163, de: "Mai", ro: "Mai", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 164, de: "Juni", ro: "Iunie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 165, de: "Juli", ro: "Iulie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 166, de: "August", ro: "August", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 167, de: "September", ro: "Septembrie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 168, de: "Oktober", ro: "Octombrie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 169, de: "November", ro: "Noiembrie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 170, de: "Dezember", ro: "Decembrie", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 171, de: "Heute", ro: "Astăzi", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 172, de: "Gestern", ro: "Ieri", level: "A", domain: "timp", domainLabel: "Calendar & Timp" },
+            { id: 173, de: "Morgen", ro: "Mâine", level: "A", domain: "timp", domainLabel: "Calendar & Timp" }
+        ];
+
+        let currentTab = 'vocabular';
+        let quizState = {
+            questions: [],
+            currentIndex: 0,
+            score: 0
+        };
+
+        // FUNCȚIE PRONUNȚIE AUDIO (Speech Synthesis) - Germană
+        function speakGerman(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Oprește vorbirea anterioară
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'de-DE';
+                utterance.rate = 0.85; // Viteză naturală
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Browserul dvs. nu suportă sinteza vocală audio.");
+            }
+        }
+
+        // SCHIMBARE TAB-URI
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'vocabular') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-vocabular').classList.add('active');
+            } else if (tabName === 'cards') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-cards').classList.add('active');
+            } else if (tabName === 'quiz') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('tab-quiz').classList.add('active');
+                startQuiz();
+            }
+            applyFilters();
+        }
+
+        // APLICARE FILTRE (A, B, C / DOMENII / CĂUTARE)
+        function getFilteredData() {
+            const levelVal = document.getElementById('filter-level').value;
+            const domainVal = document.getElementById('filter-domain').value;
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+
+            return database.filter(item => {
+                const matchLevel = (levelVal === 'all' || item.level === levelVal);
+                const matchDomain = (domainVal === 'all' || item.domain === domainVal);
+                const matchSearch = (searchVal === '' || 
+                                     item.de.toLowerCase().includes(searchVal) || 
+                                     item.ro.toLowerCase().includes(searchVal));
+                return matchLevel && matchDomain && matchSearch;
+            });
+        }
+
+        function applyFilters() {
+            const filtered = getFilteredData();
+
+            if (currentTab === 'vocabular') {
+                renderVocabular(filtered);
+            } else if (currentTab === 'cards') {
+                renderCards(filtered);
+            } else if (currentTab === 'quiz') {
+                startQuiz();
+            }
+        }
+
+        // FILA 1: RENDER VOCABULAR
+        function renderVocabular(data) {
+            const tbody = document.getElementById('vocab-tbody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem;">Nu s-au găsit cuvinte pentru filtrele selectate.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:700; color:var(--primary);">${item.de}</td>
+                    <td>${item.ro}</td>
+                    <td><span class="badge-level bg-${item.level.toLowerCase()}">${item.level}</span></td>
+                    <td style="font-size:0.85rem; color:var(--text-muted);">${item.domainLabel}</td>
+                    <td>
+                        <button class="audio-btn" onclick="speakGerman('${item.de.replace(/'/g, "\'")}')">
+                            🔊 Ascultă
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // FILA 2: RENDER FLASHCARDS
+        function renderCards(data) {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem;">Nu există carduri disponibile.</div>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'flashcard';
+                card.onclick = function(e) {
+                    if (!e.target.classList.contains('audio-btn')) {
+                        this.classList.toggle('flipped');
+                        speakGerman(item.de);
+                    }
+                };
+
+                card.innerHTML = `
+                    <div class="flashcard-inner">
+                        <div class="card-front">
+                            <span class="card-domain">${item.domainLabel}</span>
+                            <span class="badge-level bg-${item.level.toLowerCase()} card-level">${item.level}</span>
+                            <span class="word-de">${item.de}</span>
+                            <button class="audio-btn" onclick="event.stopPropagation(); speakGerman('${item.de.replace(/'/g, "\'")}')">🔊 Audio</button>
+                            <span style="font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem;">Click pentru traducere</span>
+                        </div>
+                        <div class="card-back">
+                            <span class="word-ro">${item.ro}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // FILA 3: QUIZ INTERACTIV
+        function startQuiz() {
+            const filtered = getFilteredData();
+            if (filtered.length < 3) {
+                document.getElementById('quiz-box').innerHTML = `
+                    <div style="text-align:center; padding:2rem;">
+                        <h3>Sunt necesare cel puțin 3 cuvinte pentru a genera un Quiz.</h3>
+                        <p>Schimbă filtrele de dificultate sau domeniu pentru mai multe opțiuni.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            quizState.questions = [...filtered].sort(() => 0.5 - Math.random());
+            quizState.currentIndex = 0;
+            quizState.score = 0;
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const quizBox = document.getElementById('quiz-box');
+            if (quizState.currentIndex >= quizState.questions.length || quizState.currentIndex >= 10) {
+                const total = Math.min(quizState.questions.length, 10);
+                quizBox.innerHTML = `
+                    <div class="score-board">
+                        <h2>Felicitări! Ai finalizat testul.</h2>
+                        <p>Scorul tău este:</p>
+                        <div class="score-number">${quizState.score} / ${total}</div>
+                        <button class="btn-next" onclick="startQuiz()">Reia Testul</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const currentItem = quizState.questions[quizState.currentIndex];
+            
+            const otherOptions = database.filter(i => i.id !== currentItem.id);
+            const shuffledOthers = otherOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+            const allOptions = [currentItem, ...shuffledOthers].sort(() => 0.5 - Math.random());
+
+            quizBox.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:1rem; color:var(--text-muted); font-size:0.9rem;">
+                    <span>Întrebarea ${quizState.currentIndex + 1} din ${Math.min(quizState.questions.length, 10)}</span>
+                    <span>Dificultate: <strong>${currentItem.level}</strong></span>
+                </div>
+                <div class="quiz-question">
+                    Care este traducerea corectă pentru: <span style="color:var(--secondary);">${currentItem.de}</span>?
+                </div>
+                <div class="quiz-options">
+                    ${allOptions.map(opt => `
+                        <button class="quiz-option-btn" onclick="checkAnswer(this, ${opt.id === currentItem.id}, '${currentItem.de.replace(/'/g, "\'")}')">
+                            ${opt.ro}
+                        </button>
+                    `).join('')}
+                </div>
+                <div class="quiz-controls">
+                    <button class="audio-btn" onclick="speakGerman('${currentItem.de.replace(/'/g, "\'")}')">🔊 Pronunție</button>
+                    <button class="btn-next" id="next-btn" style="display:none;" onclick="nextQuestion()">Următoarea ➔</button>
+                </div>
+            `;
+        }
+
+        function checkAnswer(btn, isCorrect, germanText) {
+            speakGerman(germanText);
+            const allBtns = document.querySelectorAll('.quiz-option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                quizState.score++;
+            } else {
+                btn.classList.add('wrong');
+            }
+
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            quizState.currentIndex++;
+            renderQuestion();
+        }
+
+        // Inițializare
+        document.addEventListener('DOMContentLoaded', () => {
+            applyFilters();
+        });
+    </script>
+</body>
+</html>
