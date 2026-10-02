@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicționar German-Român / Român-German</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header / Navbar cu culorile steagului Germaniei (Negru, Roșu, Galben/Auriu) -->
+    <header class="bg-slate-900 text-white shadow-md border-b-4 border-amber-400">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-red-600 rounded-lg shadow">
+                    <i data-lucide="languages" class="w-6 h-6 text-amber-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        Dicționar DE <i data-lucide="arrow-left-right" class="w-4 h-4 text-amber-400"></i> RO
+                    </h1>
+                    <p class="text-xs text-slate-400">Germană - Română / Română - Germană</p>
+                </div>
+            </div>
+            
+            <!-- Selector Limbi -->
+            <div class="flex items-center bg-slate-800 p-1 rounded-xl border border-slate-700">
+                <button id="btn-de-ro" onclick="setDirection('de-ro')" class="px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2 bg-red-600 text-white shadow">
+                    <span>🇩🇪 DE</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    <span>🇷🇴 RO</span>
+                </button>
+                <button id="btn-ro-de" onclick="setDirection('ro-de')" class="px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-300 hover:text-white">
+                    <span>🇷🇴 RO</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    <span>🇩🇪 DE</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-1">
+        
+        <!-- Caseta de căutare -->
+        <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i data-lucide="search" class="w-5 h-5 text-slate-400"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Caută un cuvânt..." 
+                    class="w-full pl-11 pr-10 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-slate-800 text-base sm:text-lg placeholder-slate-400 transition"
+                    oninput="handleSearch()"
+                >
+                <button 
+                    id="clear-btn" 
+                    onclick="clearSearch()" 
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"
+                >
+                    <i data-lucide="x-circle" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="mt-3 flex justify-between items-center text-xs text-slate-500 px-1">
+                <span id="search-info">Introduceți cel puțin un caracter pentru căutare</span>
+                <span id="result-count" class="font-medium"></span>
+            </div>
+        </div>
+
+        <!-- Rezultate -->
+        <div id="results-container" class="space-y-4">
+            <!-- Cardurile vor fi generate dinamic prin JS -->
+        </div>
+
+        <!-- Mesaj Fără Rezultate -->
+        <div id="no-results" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200 shadow-sm">
+            <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="search-x" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-semibold text-slate-700 mb-1">Nu s-a găsit niciun rezultat</h3>
+            <p class="text-sm text-slate-500">Încearcă să cauți alt termen sau schimbă direcția de traducere.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-sm">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© Dicționar German-Român offline / online</p>
+            <p class="text-xs text-slate-500 flex items-center gap-1">
+                Conceput pentru acces rapid <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script JavaScript -->
+    <script>
+        // Baza de date cu exemple (Germană - Română)
+        const dictionaryData = [
+            { de: "Hallo", ro: "Salut / Bună", cat: "Saluturi", ex_de: "Hallo, wie geht es dir?", ex_ro: "Salut, ce mai faci?" },
+            { de: "Guten Morgen", ro: "Bună dimineața", cat: "Saluturi", ex_de: "Guten Morgen, Frau Müller!", ex_ro: "Bună dimineața, doamna Müller!" },
+            { de: "Guten Tag", ro: "Bună ziua", cat: "Saluturi", ex_de: "Guten Tag, kann ich Ihnen helfen?", ex_ro: "Bună ziua, vă pot ajuta?" },
+            { de: "Guten Abend", ro: "Bună seara", cat: "Saluturi", ex_de: "Guten Abend zusammen!", ex_ro: "Bună seara tuturor!" },
+            { de: "Gute Nacht", ro: "Noapte bună", cat: "Saluturi", ex_de: "Gute Nacht und schlaf gut!", ex_ro: "Noapte bună și dormi bine!" },
+            { de: "Danke", ro: "Mulțumesc", cat: "Politețe", ex_de: "Vielen Dank für Ihre Hilfe.", ex_ro: "Vă mulțumesc foarte mult pentru ajutor." },
+            { de: "Bitte", ro: "Cu plăcere / Te rog", cat: "Politețe", ex_de: "Bitte schön!", ex_ro: "Cu mare plăcere!" },
+            { de: "Entschuldigung", ro: "Scuze / Scuzați-mă", cat: "Politețe", ex_de: "Entschuldigung, wo ist der Bahnhof?", ex_ro: "Scuzați-mă, unde este gara?" },
+            { de: "Ja", ro: "Da", cat: "Bază", ex_de: "Ja, ich verstehe.", ex_ro: "Da, înțeleg." },
+            { de: "Nein", ro: "Nu", cat: "Bază", ex_de: "Nein, danke.", ex_ro: "Nu, mulțumesc." },
+            { de: "Haus", ro: "Casă", cat: "Substantive", ex_de: "Das Haus ist sehr schön.", ex_ro: "Casa este foarte frumoasă." },
+            { de: "Auto", ro: "Mașină / Automobil", cat: "Substantive", ex_de: "Mein Auto steht vor der Tür.", ex_ro: "Mașina mea este în fața ușii." },
+            { de: "Arbeit", ro: "Muncă / Lucru", cat: "Substantive", ex_de: "Ich gehe jetzt zur Arbeit.", ex_ro: "Mă duc acum la muncă." },
+            { de: "Freund", ro: "Prieteni / Prieten", cat: "Substantive", ex_de: "Er ist ein guter Freund.", ex_ro: "El este un prieten bun." },
+            { de: "Essen", ro: "Mâncare / A mânca", cat: "Vocabular general", ex_de: "Das Essen schmeckt lecker.", ex_ro: "Mâncarea este gustoasă." },
+            { de: "Trinken", ro: "A bea", cat: "Verbe", ex_de: "Möchtest du etwas trinken?", ex_ro: "Vrei să bei ceva?" },
+            { de: "Sprechen", ro: "A vorbi", cat: "Verbe", ex_de: "Sprechen Sie Deutsch?", ex_ro: "Vorbiți germana?" },
+            { de: "Lernen", ro: "A învăța", cat: "Verbe", ex_de: "Ich lerne jeden Tag Deutsch.", ex_ro: "Înveț germana în fiecare zi." }
+        ];
+
+        let currentDirection = 'de-ro';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            renderResults(dictionaryData);
+        });
+
+        function setDirection(direction) {
+            currentDirection = direction;
+            
+            const btnDeRo = document.getElementById('btn-de-ro');
+            const btnRoDe = document.getElementById('btn-ro-de');
+
+            if (direction === 'de-ro') {
+                btnDeRo.className = "px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2 bg-red-600 text-white shadow";
+                btnRoDe.className = "px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-300 hover:text-white";
+            } else {
+                btnRoDe.className = "px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2 bg-red-600 text-white shadow";
+                btnDeRo.className = "px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2 text-slate-300 hover:text-white";
+            }
+
+            handleSearch();
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const clearBtn = document.getElementById('clear-btn');
+            
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const filtered = dictionaryData.filter(item => {
+                if (currentDirection === 'de-ro') {
+                    return item.de.toLowerCase().includes(query) || item.cat.toLowerCase().includes(query);
+                } else {
+                    return item.ro.toLowerCase().includes(query) || item.cat.toLowerCase().includes(query);
+                }
+            });
+
+            renderResults(filtered);
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('clear-btn').classList.add('hidden');
+            handleSearch();
+            document.getElementById('search-input').focus();
+        }
+
+        function renderResults(results) {
+            const container = document.getElementById('results-container');
+            const noResults = document.getElementById('no-results');
+            const countElem = document.getElementById('result-count');
+
+            container.innerHTML = '';
+            countElem.textContent = `${results.length} rezultate`;
+
+            if (results.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            results.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row sm:items-center justify-between gap-4";
+
+                const sourceText = currentDirection === 'de-ro' ? item.de : item.ro;
+                const targetText = currentDirection === 'de-ro' ? item.ro : item.de;
+                const sourceLang = currentDirection === 'de-ro' ? '🇩🇪 DE' : '🇷🇴 RO';
+                const targetLang = currentDirection === 'de-ro' ? '🇷🇴 RO' : '🇩🇪 DE';
+
+                const exSource = currentDirection === 'de-ro' ? item.ex_de : item.ex_ro;
+                const exTarget = currentDirection === 'de-ro' ? item.ex_ro : item.ex_de;
+
+                card.innerHTML = `
+                    <div class="space-y-2 flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">${item.cat}</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-slate-400">${sourceLang}</span>
+                                <span class="text-lg font-bold text-slate-900">${sourceText}</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 hidden sm:block"></i>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-red-600">${targetLang}</span>
+                                <span class="text-lg font-semibold text-red-600">${targetText}</span>
+                            </div>
+                        </div>
+                        ${exSource ? `
+                            <div class="mt-2 text-xs text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                <p class="italic text-slate-700">"${exSource}"</p>
+                                <p class="text-slate-500 mt-0.5">"${exTarget}"</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
