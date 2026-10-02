@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zegra Construcții | Management de Proiect & Execuție Elită</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-bg: #0b0c10;
+            --secondary-bg: #1f2833;
+            --accent: #e67e22;
+            --accent-hover: #d35400;
+            --text-light: #66fcf1; /* Culoare tehnica */
+            --text-main: #ffffff;
+            --text-muted: #c5c6c7;
+            --glass: rgba(11, 12, 16, 0.85);
+            --success: #27ae60;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- LOADER --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary-bg); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .spinner { width: 50px; height: 50px; border: 5px solid var(--secondary-bg); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(0,0,0,0.9); padding: 20px 0;
+            transition: 0.4s; border-bottom: 1px solid rgba(230, 126, 34, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        nav.scrolled { padding: 10px 0; background: var(--primary-bg); }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--text-main); text-decoration: none; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; list-style: none; }
+        .nav-links li { margin-left: 25px; }
+        .nav-links a { 
+            color: var(--text-main); text-decoration: none; font-size: 0.85rem; font-weight: 700; 
+            transition: 0.3s; position: relative; padding-bottom: 5px;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.postimg.cc/JhbM0Qkj/1776881482056.png');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            display: flex; align-items: center; justify-content: center; text-align: center; color: #white;
+        }
+        .hero-content { max-width: 800px; padding: 20px; animation: fadeInUp 1s ease; }
+        .hero-content h1 { font-size: 3.5rem; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .hero-content p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; }
+        .cta-buttons { display: flex; justify-content: center; gap: 20px; }
+        .btn {
+            padding: 15px 35px; border-radius: 5px; text-decoration: none; font-weight: 700;
+            text-transform: uppercase; transition: 0.4s; display: inline-block; cursor: pointer;
+        }
+        .btn-primary { background: var(--accent); color: white; border: 2px solid var(--accent); }
+        .btn-primary:hover { background: transparent; color: var(--accent); }
+        .btn-secondary { border: 2px solid white; color: white; }
+        .btn-secondary:hover { background: white; color: black; }
+
+        /* --- MAIN SECTIONS --- */
+        section { padding: 100px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; position: relative; display: inline-block; padding-bottom: 15px; }
+        .section-header h2::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: var(--accent); }
+        .section-header p { color: var(--text-muted); margin-top: 15px; font-size: 1.1rem; }
+
+        /* --- ABOUT (DESPRE) --- */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .about-text h3 { color: var(--accent); margin-bottom: 20px; }
+        .about-text p { margin-bottom: 15px; color: var(--text-muted); text-align: justify; }
+        .about-image { position: relative; border-radius: 15px; overflow: hidden; border: 1px solid var(--accent); }
+        .about-image img { width: 100%; display: block; filter: grayscale(40%); transition: 0.5s; }
+        .about-image:hover img { filter: grayscale(0%); transform: scale(1.05); }
+
+        .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px; }
+        .value-card { background: var(--secondary-bg); padding: 30px; border-radius: 10px; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .value-card:hover { border-color: var(--accent); transform: translateY(-10px); }
+        .value-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; }
+
+        /* --- SERVICES GRID --- */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .service-box { 
+            background: #161b22; padding: 40px; border: 1px solid rgba(255,255,255,0.05); 
+            border-radius: 15px; transition: 0.4s;
+        }
+        .service-box:hover { background: var(--secondary-bg); border-color: var(--accent); }
+        .service-box h4 { margin: 15px 0; color: var(--accent); }
+        .service-box ul { list-style: none; color: var(--text-muted); font-size: 0.9rem; }
+        .service-box ul li::before { content: '✓'; color: var(--accent); margin-right: 10px; }
+
+        /* --- CALCULATOR V3 --- */
+        .calculator-container {
+            background: var(--secondary-bg); border-radius: 20px; padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(230, 126, 34, 0.2);
+        }
+        .calc-form { display: grid; grid-template-columns: 2fr 1fr auto; gap: 15px; margin-bottom: 30px; }
+        select, input { 
+            background: #0b0c10; border: 1px solid #444; color: white; padding: 15px; 
+            border-radius: 5px; outline: none; font-size: 1rem;
+        }
+        select:focus, input:focus { border-color: var(--accent); }
+        .add-btn { background: var(--accent); border: none; color: white; padding: 0 30px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        .deviz-table-wrapper { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { background: rgba(230, 126, 34, 0.1); color: var(--accent); text-align: left; padding: 15px; }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .total-display { 
+            margin-top: 30px; text-align: right; font-size: 2rem; font-weight: 800; color: var(--accent);
+            padding: 20px; border-top: 2px dashed rgba(255,255,255,0.1);
+        }
+
+        /* --- PORTOFOLIU MODULAR --- */
+        .portfolio-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .tab-btn { background: var(--secondary-bg); border: 1px solid var(--accent); color: white; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: var(--accent); }
+
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .gallery-item { 
+            position: relative; border-radius: 15px; overflow: hidden; height: 300px; 
+            background: #000; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; opacity: 0.8; }
+        .gallery-item:hover img { transform: scale(1.1); opacity: 1; }
+        .gallery-overlay {
+            position: absolute; bottom: -100%; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 30px; transition: 0.4s;
+        }
+        .gallery-item:hover .gallery-overlay { bottom: 0; }
+
+        /* --- FAQ SECTION --- */
+        .faq-container { max-width: 800px; margin: 0 auto; }
+        .faq-item { background: var(--secondary-bg); margin-bottom: 10px; border-radius: 5px; overflow: hidden; }
+        .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .faq-answer { padding: 0 20px; max-height: 0; overflow: hidden; transition: 0.3s ease-out; color: var(--text-muted); }
+        .faq-item.active .faq-answer { padding: 20px; max-height: 200px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        /* --- FOOTER --- */
+        footer { background: #050505; padding: 80px 20px 20px; border-top: 1px solid rgba(230, 126, 34, 0.2); }
+        .footer-grid { 
+            max-width: 1200px; margin: 0 auto; display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; 
+        }
+        .footer-col h4 { color: var(--accent); margin-bottom: 25px; }
+        .footer-col p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px; }
+        .social-links a { color: white; font-size: 1.5rem; margin-right: 20px; transition: 0.3s; }
+        .social-links a:hover { color: var(--accent); }
+        .copyright { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); color: #555; font-size: 0.8rem; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 992px) {
+            .about-grid { grid-template-columns: 1fr; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .calc-form { grid-template-columns: 1fr; }
+            .nav-links { display: none; } /* De implementat hamburger pt mobile */
+        }
+
+        /* Float WhatsApp */
+        .whatsapp-float {
+            position: fixed; bottom: 30px; right: 30px; background: var(--success);
+            width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000; transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1) rotate(10deg); }
+    </style>
+</head>
+<body>
+
+    <div id="loader"><div class="spinner"></div></div>
+
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">ZEGRA<span>.</span></a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#despre">Despre</a></li>
+                <li><a href="#servicii">Servicii</a></li>
+                <li><a href="#calculator">Calculator</a></li>
+                <li><a href="#portofoliu">Portofoliu</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Construim <span>Viitorul</span> Cu Rigoare</h1>
+            <p>Zegra Construcții: Management de elită, execuție fără defecte și transparență financiară totală prin devize personalizate în timp real.</p>
+            <div class="cta-buttons">
+                <a href="#calculator" class="btn btn-primary">Cere Deviz</a>
+                <a href="#portofoliu" class="btn btn-secondary">Vezi Proiecte</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="despre">
+        <div class="section-header">
+            <h2>Excelență în Execuție</h2>
+            <p>Peste 10 ani de experiență în coordonarea șantierelor complexe.</p>
+        </div>
+        
+        <div class="about-grid">
+            <div class="about-text">
+                <h3>Zegra: Mai mult decât o firmă de construcții</h3>
+                <p>La <strong>Zegra Construcții</strong>, credem că o lucrare bine făcută începe cu o planificare riguroasă și se termină cu un client deplin satisfăcut. Suntem o echipă dedicată sectorului de construcții și amenajări, specializată în oferirea de soluții complete de manoperă pentru proiecte rezidențiale, comerciale și industriale.</p>
+                <p>Nu ne limităm la a construi structuri; construim durabilitate. Fiecare etapă a procesului, de la prima cupă de pământ excavată până la ultimele finisaje de finețe, este supravegheată cu o atenție obsesivă la detaliile tehnice și normativele în vigoare.</p>
+                <p>Ne propunem să ridicăm standardul serviciilor de construcții din România prin profesionalizarea fiecărei interacțiuni. Pentru noi, fiecare șantier este o carte de vizită care ne reprezintă ani de zile.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://i.postimg.cc/dVyd4DXS/1776885442802.png" alt="Santiere Zegra">
+            </div>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-card">
+                <i class="fas fa-search-dollar"></i>
+                <h4>Transparență</h4>
+                <p>Devize calculate pe loc. Știi exact unde se duce fiecare leu investit în manoperă.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-shield-alt"></i>
+                <h4>Garanție</h4>
+                <p>Oferim 15 ani garanție pentru structură și 10 ani pentru integritatea zidăriei executate.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-clock"></i>
+                <h4>Promptitudine</h4>
+                <p>Respectăm graficul de execuție. Penalizările pentru întârziere sunt asumate prin contract.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicii" style="background: #0f1216; max-width: 100%;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div class="section-header">
+                <h2>Servicii Integrate</h2>
+                <p>De la infrastructură la finisaje de lux.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-box">
+                    <i class="fas fa-hard-hat" style="font-size: 2rem; color: var(--accent);"></i>
+                    <h4>Structură la Roșu</h4>
+                    <ul>
+                        <li>Săpături și fundații izolate/radier</li>
+                        <li>Armare fier și fasonare profesională</li>
+                        <li>Cofrare Doka / Panouri multistrat</li>
+                        <li>Zidărie portantă cărămidă/BCA</li>
+                    </ul>
+                </div>
+                <div class="service-box">
+                    <i class="fas fa-paint-roller" style="font-size: 2rem; color: var(--accent);"></i>
+                    <h4>Finisaje de Interior</h4>
+                    <ul>
+                        <li>Tencuieli mecanizate sau manuale</li>
+                        <li>Gleturi de finisaj și șlefuire "la bec"</li>
+                        <li>Montaj gresie/faianță mari dimensiuni</li>
+                        <li>Parchet stratificat și plinte MDF</li>
+                    </ul>
+                </div>
+                <div class="service-box">
+                    <i class="fas fa-tools" style="font-size: 2rem; color: var(--accent);"></i>
+                    <h4>Instalații & Rețele</h4>
+                    <ul>
+                        <li>Instalații electrice complete (Smart Home)</li>
+                        <li>Sanitare și încălzire în pardoseală</li>
+                        <li>Canalizare și drenaj pluvial</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculator">
+        <div class="section-header">
+            <h2>Calculator Deviz Online</h2>
+            <p>Selectează lucrările dorite pentru o estimare instantanee conform listei Adi Construct 2026.</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="calc-form">
+                <select id="serviceSelect">
+                    <option value="" disabled selected>-- Caută lucrarea în listă --</option>
+                    <optgroup label="DEMOLĂRI & PREGĂTIRE">
+                        <option value="Decopertat tencuiala|35|mp">Decopertat tencuială (35 lei/mp)</option>
+                        <option value="Demolat sapa armata|120|mp">Demolat șapă armată (120 lei/mp)</option>
+                        <option value="Demolat pereti zidarie|115|mp">Demolat pereți zidărie (115 lei/mp)</option>
+                        <option value="Demolat fundatii beton|200|mp">Demolat fundații beton (200 lei/mp)</option>
+                    </optgroup>
+                    <optgroup label="SĂPĂTURI & STRUCTURĂ">
+                        <option value="Sapatura manuala|400|mc">Săpătură manuală (400 lei/mc)</option>
+                        <option value="Turnat beton cifa/pompa|150|mc">Turnat beton cifa/pompă (150 lei/mc)</option>
+                        <option value="Montaj fier placa|5.5|kg">Montaj fier placă (5.5 lei/kg)</option>
+                        <option value="Cofrat panouri Doka|75|mp">Cofrat panouri Doka (75 lei/mp)</option>
+                        <option value="Zidarie BCA mare|280|mc">Zidărie BCA mare (280 lei/mc)</option>
+                        <option value="Zidarie Caramida mare|350|mc">Zidărie cărămidă mare (350 lei/mc)</option>
+                    </optgroup>
+                    <optgroup label="FINISAJE INTERIOARE">
+                        <option value="Tencuiala interior brut|39|mp">Tencuială interior (39 lei/mp)</option>
+                        <option value="Glet finisaj (1 strat)|38|mp">Glet finisaj (38 lei/mp)</option>
+                        <option value="Slefuit glet|12|mp">Șlefuit glet (12 lei/mp)</option>
+                        <option value="Zugraveala alb (complet)|65|mp">Zugrăveală albă gata (65 lei/mp)</option>
+                        <option value="Placat gresie/faianta std|75|mp">Placat gresie/faianță (75 lei/mp)</option>
+                        <option value="Montaj parchet laminat|36|mp">Montat parchet laminat (36 lei/mp)</option>
+                    </optgroup>
+                    <optgroup label="INSTALAȚII">
+                        <option value="Montaj obiecte sanitare|210|buc">Montaj obiect sanitar (210 lei/buc)</option>
+                        <option value="Tablou electric|400|buc">Montat tablou electric (400 lei/buc)</option>
+                        <option value="Instalatie electrica camera|300|cam">Înlocuit inst. el. (300 lei/cam)</option>
+                    </optgroup>
+                </select>
+                <input type="number" id="qtyInput" placeholder="Cantitate (ex: 50)">
+                <button class="add-btn" onclick="addItem()">Adaugă</button>
+            </div>
+
+            <div class="deviz-table-w
